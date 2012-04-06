@@ -45,6 +45,8 @@ $config['options'] = array(
                                   
                                   'sort' => array('name'=>'bSort','default'=>TRUE),
                                   
+								  'sorting' => array('name'=>'aaSorting','default'=>array(array(0,"asc"))),
+                                  
                                   'display_length' => array('name'=>'iDisplayLength','default'=>10), 
                                   
                                   'length_change' => array('name'=>'bLengthChange','default'=>TRUE),
@@ -57,7 +59,7 @@ $config['options'] = array(
                                   
                                   'auto_width' => array('name'=>'bAutoWidth','default'=>TRUE),
                                   
-                                  'defer_render' => array('name'=>'bDeferRender','default'=>TRUE),
+                                  'defer_render' => array('name'=>'bDeferRender','default'=>FALSE),
                                   
                                   'scroll_collapse' => array('name'=>'bScrollCollapse','default'=>TRUE),
                                   
@@ -73,13 +75,19 @@ $config['options'] = array(
                                   
                                   'auto_resize' => array('name'=>'_bAutoResize','default'=>TRUE),
                                   
-                                  'token_regex' => array('name'=>'_sTokenRegex', 'default'=>'/{([^\s}]*)}/i'),
+                                  'token_regex' => array('name'=>'_sTokenRegex', 'default'=>'/{([^}]*)}/i'),
                                   
                                   'table' => array('name'=>'_sTable', 'default'=>'<table id="_ID_" cellpadding="0" cellspacing="0" border="0"></table>'),
                                   
                                   'format_js' => array('name'=>'_bFormatJs', 'default'=>FALSE),
                                   
-								  'init_complete' => array('name'=>'fnInitComplete', 'default'=>'{init_complete}', 'parameters'=>array('dt'))
+								  'init_complete' => array('name'=>'fnInitComplete', 'default'=>'{init_complete}', 'parameters'=>array('dt')),
+								  
+								  'row_form' => array('name'=>'_sRowForm', 'default'=>''),
+								  
+								  'row_form_data' => array('name'=>'_aRowFormData', 'default'=>array()),
+								  
+								  'key_table' => array('name'=>'_bKeyTable', 'default'=>FALSE)
               
                                 ),
                                 
@@ -99,25 +107,46 @@ $config['options'] = array(
                       
                                   'visible' => array('name'=>'bVisible', 'default'=>TRUE),
                                         
-                                  'class' => array('name'=>'sClass', 'default'=>''),
+                                  'class' => array('name'=>'sClass', 'default'=>NULL),
                                   
 								  'width' => array('name'=>'sWidth', 'default'=>NULL),	 
 								  
 								  'cell_value' => array('name'=>'_sCellValue', 'default'=>''),
 								  
 								  'visibility_toggle'    => array('name'=>'_bVisibilityToggle', 'default'=>TRUE),
-                                  
-                                  'callbacks' => array('name'=>'_afCallbacks', 'default'=>array())
-                                
+								  
+								   //if you are adding columns to the table automatically, 
+								   //consider using add_column_data() instead of setting this directly
+								  'col_data' => array('name'=>'_aColData','default'=>array()),
+								  
+								  //if you are adding columns to the table automatically, 
+								  //consider using add_column_callback() instead of setting this directly
+                                  'callbacks' => array('name'=>'_afCallbacks', 'default'=>array()),
+
+
+								  // JEDITABLE COLUMN OPTIONS	
+
+								  'editable' => array('name'=>'_sEditable', 'default'=>''),
+								  						  
+								  //be careful when setting the jeditble option "submitdata" as this completely disables
+								  //the datatable options "editable_row_data" and "editable_col_data" below
+								  'editable_options' => array('name'=>'_aEditableOptions', 'default'=>array('event'=>'dblclick.editable')),
+								  								  
+								  //these options add data that was set using
+								  //add_column_data and add_row_data to the jeditble ajax post 
+								  'editable_row_data' => array('name'=>'_aEditableRowData','default'=>array('id')),							  
+								  'editable_col_data' => array('name'=>'_aEditableColData','default'=>array())
+		  
+                            
                                 ),
                                 
                'table_tools' => array(
                
                                   '_' => 'oTableTools',
                                   
-                                  'swf_path' => array('name'=>'sSwfPath', 'default'=>'assets/swf/copy_cvs_xls_pdf.swf'),
+                                  'swf_path' => array('name'=>'sSwfPath', 'default'=>'/assets/swf/copy_cvs_xls_pdf.swf'),
                                   
-                                  'buttons' => array('name'=>'aButtons', 'default'=>array('sExtends'=>'collection','sButtonText'=>'{lang_export}','aButtons'=>array('csv', 'xls', 'pdf', 'copy')))
+                                  'buttons' => array('name'=>'aButtons', 'default'=>array(array('sExtends'=>'collection','sButtonText'=>'{lang_export}','aButtons'=>array('csv', 'xls', 'pdf', 'copy'))))
                
                                 ),
                                         
@@ -145,6 +174,22 @@ $config['options'] = array(
                                   'fixed_columns' => array('name'=>'iFixedColumns', 'default'=>0)
                
                                 ),
+                                
+			   'key_table'  => array(
+			   						
+									'_' => 'oKeyTable',
+									
+									'focus' => array('name'=>'focus', 'default'=>array(0,0)),
+									
+									'focus_class' => array('name'=>'focusClass', 'default'=>'focus'),
+									
+									'form' => array('name'=>'form', 'default'=>FALSE),
+									
+									'init_scroll' => array('name'=>'initScroll', 'default'=>TRUE),
+									
+									'tab_index' => array('name'=>'tabIndex', 'default'=>'')
+			   		   
+			   					),					
                                 
                   'language' => array(
                             
@@ -178,5 +223,4 @@ $config['options'] = array(
                                        
                             ); 
                             
-/* End of file datatables.php */
-/* Location: ./application/config/datatables.php */                           
+/* End of file config/datatables.php */                      
