@@ -77,11 +77,11 @@ $config['options'] = array(
                                   
                                   'token_regex' => array('name'=>'_sTokenRegex', 'default'=>'/{([^}]*)}/i'),
                                   
-                                  'table' => array('name'=>'_sTable', 'default'=>'<section id="_ID__container"><header><h4>_NAME_</h4></header><table id="_ID_" cellpadding="0" cellspacing="0" border="0" width="100%"></table><footer></footer></section>'),
+                                  'table' => array('name'=>'_sTable', 'default'=>'<table id="_ID_" cellpadding="0" cellspacing="0" border="0" width="100%"></table>'),
                                   
                                   'format_js' => array('name'=>'_bFormatJs', 'default'=>FALSE),
                                   
-								  'init_complete' => array('name'=>'fnInitComplete', 'default'=>'dt_callbacks.fire(dt);', 'parameters'=>array('dt')),
+								  'init_complete' => array('name'=>'fnInitComplete', 'default'=>'', 'parameters'=>array('dt')),
 								  
 								  'row_form' => array('name'=>'_sRowForm', 'default'=>''),
 								  
