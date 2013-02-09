@@ -35,7 +35,7 @@ $config['options'] = array(
                 
                                   '_'      => '',
                 
-                                  'layout' => array('name'=>'sDom','default'=>'R<"H"iTCfr>t<"F"lp>'),
+                                  'layout' => array('name'=>'sDom','default'=>'RfrtCTip'),
                                   
                                   'paginate' => array('name'=>'bPaginate','default'=>TRUE),
                                   
@@ -63,9 +63,9 @@ $config['options'] = array(
                                   
                                   'scroll_collapse' => array('name'=>'bScrollCollapse','default'=>TRUE),
                                   
-                                  'scroll_auto_css' => array('name'=>'bScrollAutoCss','default'=>FALSE),
+                                  'scroll_auto_css' => array('name'=>'bScrollAutoCss','default'=>TRUE),
                                   
-                                  'scroll_x' => array('name'=>'sScrollX','default'=>'100%'),
+                                  'scroll_x' => array('name'=>'sScrollX','default'=>''),
                                   
                                   'length_menu' => array('name'=>'aLengthMenu','default'=>array(array(5,10,25,50,-1),array(5,10,25,50,"All"))),
                                   
@@ -77,11 +77,11 @@ $config['options'] = array(
                                   
                                   'token_regex' => array('name'=>'_sTokenRegex', 'default'=>'/{([^}]*)}/i'),
                                   
-                                  'table' => array('name'=>'_sTable', 'default'=>'<table id="_ID_" cellpadding="0" cellspacing="0" border="0"></table>'),
+                                  'table' => array('name'=>'_sTable', 'default'=>'<section id="_ID__container"><header><h4>_NAME_</h4></header><table id="_ID_" cellpadding="0" cellspacing="0" border="0" width="100%"></table><footer></footer></section>'),
                                   
                                   'format_js' => array('name'=>'_bFormatJs', 'default'=>FALSE),
                                   
-								  'init_complete' => array('name'=>'fnInitComplete', 'default'=>'{init_complete}', 'parameters'=>array('dt')),
+								  'init_complete' => array('name'=>'fnInitComplete', 'default'=>'dt_callbacks.fire(dt);', 'parameters'=>array('dt')),
 								  
 								  'row_form' => array('name'=>'_sRowForm', 'default'=>''),
 								  
@@ -130,7 +130,7 @@ $config['options'] = array(
 								  						  
 								  //be careful when setting the jeditble option "submitdata" as this completely disables
 								  //the datatable options "editable_row_data" and "editable_col_data" below
-								  'editable_options' => array('name'=>'_aEditableOptions', 'default'=>array('event'=>'dblclick.editable')),
+								  'editable_options' => array('name'=>'_aEditableOptions', 'default'=>array('event'=>'click.editable')),
 								  								  
 								  //these options add data that was set using
 								  //add_column_data and add_row_data to the jeditble ajax post 
@@ -144,9 +144,9 @@ $config['options'] = array(
                
                                   '_' => 'oTableTools',
                                   
-                                  'swf_path' => array('name'=>'sSwfPath', 'default'=>'/assets/swf/copy_cvs_xls_pdf.swf'),
+                                  'swf_path' => array('name'=>'sSwfPath', 'default'=>'/assets/swf/copy_csv_xls_pdf.swf'),
                                   
-                                  'buttons' => array('name'=>'aButtons', 'default'=>array(array('sExtends'=>'collection','sButtonText'=>'{lang_export}','aButtons'=>array('csv', 'xls', 'pdf', 'copy'))))
+                                  'buttons' => array('name'=>'aButtons', 'default'=>array(array('sExtends'=>'collection','sButtonText'=>'{lang_export} ','aButtons'=>array('csv', 'xls', 'pdf', 'copy'))))
                
                                 ),
                                         
@@ -155,9 +155,9 @@ $config['options'] = array(
                                     
                                   '_' => 'oColVis',
                                   
-                                  'button_text' => array('name'=>'buttonText', 'default'=>'{lang_columns}'),
+                                  'button_text' => array('name'=>'buttonText', 'default'=>'{lang_columns} '),
                                   
-								  'align' => array('name'=>'sAlign', 'default'=>'right'),
+								  'align' => array('name'=>'sAlign', 'default'=>'left'),
                                   
                                   'restore' => array('name'=>'bRestore', 'default'=>TRUE),
                                   

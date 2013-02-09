@@ -145,6 +145,8 @@
 		  
           $this->options['aoColumns'] = array();
           
+		  $this->options['fnInitComplete'] = $this->config['main']['init_complete']['default'];
+		  
           //copy default column options from config
           foreach($this->config['column'] as $i=>$column){
               
@@ -399,7 +401,7 @@
       * @return $this
       */
       public function add_column($name_arguments, $position = FALSE, $cell_value = FALSE, $options = array()){ 
-        
+			
           //allow the first parameter to be used to
           //pass an array of arguments
           if (is_array($name_arguments)){
@@ -453,19 +455,21 @@
 				}
 		  		$this->options['oColVis']['aiExclude'][] = $position;
 		  }
-          
+		  
           return $this;
       }
 
 
 
 
-	  /**
+	   /**
       * Adds a "action" column to the table
       *
       * @param array $options : an array containing options to pass to the add_column method
-	  * 					    additionally, this array must contain a key called 'name' whose value is the 
-	  * 					    event action name to trigger when a cell in this column is clicked ("action_" is prepended to this name)
+	  * 					    additionally, this array must contain a key called 'action' whose value is the 
+	  * 					    event action name (or comma separated list for multiple) to trigger when a cell 
+	  *                         in this column is clicked ("action_" is prepended to this name). For obvious reasons,
+	  *                         the action name must not contain a space.
 	  * 					    optionally, you may provide a key called "js" which contains the javascript code to execute when
 	  *                         the event is triggered                  
       * @param mixed $position : any valid get_column_index() parameter				
@@ -475,16 +479,33 @@
 	  public function add_action_column($options, $position = FALSE){
 	  		
 			//force required parameter 'action'
-			if (isset($options['name'])){
+			if (isset($options['action'])){
 					
-				$this->actions[$options['name']] = isset($options['js']) ? $options['js'] : FALSE;
+				$actions = explode(',', $options['action']);
+				
+				foreach($actions as $action){
+					
+					$this->actions[trim($action)] = isset($options['js']) ? $options['js'] : FALSE;
+				}	
+					
+				$class = '';
+				if (isset($options['sClass'])){
+					
+					$class = $options['sClass'] . ' ';
+				}
+				elseif(isset($options['class'])){
+					
+					$class = $options['class'] . ' ';
+				}
+				
+				$options['sClass'] = $class . 'action action[' . $options['action'] . ']';
+				
 				
 				$this->add_column($options, $position);
 			}
 		
 			return $this;
 	  }
-
 
 
 
@@ -534,11 +555,12 @@
               if (is_callable($function)){
               	
 				  if (!is_array($parameters)){
+				 
 				  	  $parameters = array($parameters);
 				  }
 				
                   if (!in_array('cell_value', $parameters)){
-                  	
+                  	 
                       array_unshift($parameters,'cell_value');
                   }            
                   
@@ -546,6 +568,8 @@
                   $this->columns[$index]['_afCallbacks'][] = array('function'=>$function, 'parameters' => $parameters);
               }
           }
+		  
+		  
            
           return $this;
       }
@@ -710,10 +734,12 @@
       {   
       	  
 		  $this->add_constant('id', $id);
-		  $this->add_constant('name', $name ? $name : str_replace('_', ' ', $id));
+		  $this->add_constant('name', $name ? $name : humanize($id));
 		  $this->add_constant('singularname', singular($this->constants['name']));
 		  
-		  $this->callbacks['init_complete'] = '';
+		  $this->callbacks['init_complete'] = $this->options['fnInitComplete'];
+		  $this->options['fnInitComplete'] = '{init_complete}';
+		
 		  $table['js'] = ''; 
 		  	
           $this->options['aaData'] = array();
@@ -795,6 +821,7 @@
 	                    
 	                    //run column callbacks on row
 	                    foreach($col['_afCallbacks'] as $cb){
+	
 	                        $cb['parameters'] = str_replace('cell_value', $this->options['aaData'][$row_index][$col_index], $cb['parameters']);
 	                        $this->options['aaData'][$row_index][$col_index] = call_user_func_array($cb['function'], $cb['parameters']);
 	                    }
@@ -862,7 +889,7 @@
           
           //add callback to set placeholder on filter search box 
           //and callback to store row data   
-          $this->callbacks['init_complete'] .=  "$(dt.nTableWrapper).find('.datatable_filter input').attr('placeholder','{lang_search_placeholder}');
+          $this->callbacks['init_complete'] .=  "$(dt.nTableWrapper).find('.datatables_filter input').attr('placeholder','{lang_search_placeholder}');
           											
 													var rows = $(dt.nTable).dataTable().fnGetNodes();
 													$.each(rows,function(i){
@@ -914,7 +941,7 @@
 								 var form = $('<div title=\"Add _SINGULARNAME_\"></div>');
 								 form.html('" . strip_newlines($this->ci->load->view($this->options['_sRowForm'],$this->options['_aRowFormData'], TRUE)) . "');
 								 $(document.body).append(form);
-  					             var icon = table.closest('.datatable_wrapper').next('span');
+  					             var icon = table.closest('.datatables_wrapper').next('span');
 								 var reset = form.find('button[type=reset]');	
 								
 								 form.dialog({
@@ -972,13 +999,14 @@
           if ($this->actions) {
           	
 			  //add click event to table to handle actions
-			  $table['js'] .= "$id.click(function(e){
-								if (e.target.className.indexOf('action[') != -1){
-									var actions = /action\[(\S+)\]/ig.exec(e.target.className)[1].split(',');
-									for (var i=0; i < actions.length; i++){
-										$id.triggerHandler('action_'+actions[i],[ $id , $(e.target).closest('tr')]);
-									}
+			  $table['js'] .= "$id.on('click','.action', function(){
+								
+								var actions = /action\[(\S+)\]/ig.exec($(this).attr('class'))[1].split(',');
+								for (var i=0; i < actions.length; i++){
+							
+									$id.triggerHandler('action_'+actions[i],[ $id , $(this).closest('tr')]);
 								}
+								
 							  });";
 			  
 			  //bind events for each action			  
